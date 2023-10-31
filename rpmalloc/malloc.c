@@ -88,6 +88,8 @@ extern inline void RPMALLOC_CDECL cfree(void* ptr) { rpfree(ptr); }
 extern inline size_t RPMALLOC_CDECL malloc_usable_size(void* ptr) { return rpmalloc_usable_size(ptr); }
 extern inline size_t RPMALLOC_CDECL malloc_size(void* ptr) { return rpmalloc_usable_size(ptr); }
 
+
+#if ENABLE_CXX
 #ifdef _WIN32
 // For Windows, #include <rpnew.h> in one source file to get the C++ operator overrides implemented in your module
 #else
@@ -134,6 +136,7 @@ extern void _ZdlPvSt11align_val_t(void* p, uint32_t align); void RPDEFVIS _ZdlPv
 extern void _ZdaPvSt11align_val_t(void* p, uint32_t align); void RPDEFVIS _ZdaPvSt11align_val_t(void* p, uint64_t a) { rpfree(p); (void)sizeof(align); }
 extern void _ZdlPvjSt11align_val_t(void* p, uint32_t size, uint32_t align); void RPDEFVIS _ZdlPvjSt11align_val_t(void* p, uint64_t size, uint64_t align) { rpfree(p); (void)sizeof(size); (void)sizeof(a); }
 extern void _ZdaPvjSt11align_val_t(void* p, uint32_t size, uint32_t align); void RPDEFVIS _ZdaPvjSt11align_val_t(void* p, uint64_t size, uint64_t align) { rpfree(p); (void)sizeof(size); (void)sizeof(a); }
+#endif
 #endif
 #endif
 #endif
@@ -195,6 +198,7 @@ __attribute__ ((section("__DATA, __interpose"))) = {
 
 #define RPALIAS(fn) __attribute__((alias(#fn), used, visibility("default")));
 
+#if ENABLE_CXX
 // Alias the C++ operators using the mangled names (https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
 
 // operators delete and delete[]
@@ -239,6 +243,7 @@ void _ZdlPvSt11align_val_t(void* p, size_t a) RPALIAS(rpfree_aligned)
 void _ZdaPvSt11align_val_t(void* p, size_t a) RPALIAS(rpfree_aligned)
 void _ZdlPvjSt11align_val_t(void* p, size_t n, size_t a) RPALIAS(rpfree_size_aligned)
 void _ZdaPvjSt11align_val_t(void* p, size_t n, size_t a) RPALIAS(rpfree_size_aligned)
+#endif
 #endif
 
 void* malloc(size_t size) RPMALLOC_ATTRIB_MALLOC RPMALLOC_ATTRIB_ALLOC_SIZE(1) RPALIAS(rpmalloc)
